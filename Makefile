@@ -1,59 +1,56 @@
-INSTALL=install -p
-dracutdir = $(DESTDIR)/usr/lib/dracut/modules.d
-libexecdir = $(DESTDIR)/usr/libexec
+VERSION=0.7
+INSTALL=install -p -D
+SED=sed
+LIBEXECDIR=/usr/libexec
+DRACUTMODDIR=/usr/lib/dracut/modules.d
 
-system_upgrade_DIR = 90system-upgrade
-system_upgrade_SCRIPTS = module-setup.sh \
-			 upgrade-init.sh \
-			 upgrade-pre-pivot.sh \
-			 upgrade-pre.sh \
-			 upgrade.sh \
-			 upgrade-post.sh
-system_upgrade_DATA = README.txt \
-		      upgrade.target \
-		      upgrade-pre.service \
-		      upgrade.service \
-		      upgrade-post.service \
-		      upgrade-debug-shell.service
+SCRIPTS = 90system-upgrade/module-setup.sh \
+	  90system-upgrade/upgrade-init.sh \
+	  90system-upgrade/upgrade-pre-pivot.sh \
+	  90system-upgrade/upgrade-pre.sh \
+	  90system-upgrade/upgrade.sh \
+	  90system-upgrade/upgrade-post.sh \
+	  85system-upgrade-fedora/module-setup.sh \
+	  85system-upgrade-fedora/keep-initramfs.sh \
+	  85system-upgrade-fedora/do-upgrade.sh \
+	  85system-upgrade-fedora/save-journal.sh
 
-system_upgrade_fedora_DIR = 85system-upgrade-fedora
-system_upgrade_fedora_SCRIPTS = module-setup.sh \
-				keep-initramfs.sh \
-				do-upgrade.sh \
-				save-journal.sh
+DATA = 90system-upgrade/README.txt \
+       90system-upgrade/upgrade.target \
+       90system-upgrade/upgrade-pre.service \
+       90system-upgrade/upgrade.service \
+       90system-upgrade/upgrade-post.service \
+       90system-upgrade/upgrade-debug-shell.service
 
-all: system-upgrade-fedora
+BIN = system-upgrade-fedora
+
+GENFILES = 85system-upgrade-fedora/module-setup.sh
+
+all: $(SCRIPTS) $(DATA) $(BIN)
 
 PACKAGES=glib-2.0 rpm
 # TODO: use ply-boot-client
 #PACKAGES+=ply-boot-client
 #CFLAGS+=-DUSE_PLYMOUTH_LIBS
 
-system-upgrade-fedora: system-upgrade-fedora.c
+$(BIN): %: %.c
 	$(CC) $(shell pkg-config $(PACKAGES) --cflags --libs) $(CFLAGS) $< -o $@
 
+$(GENFILES): %: %.in
+	$(SED) 's,@LIBEXECDIR@,$(LIBEXECDIR),g' $< > $@
+
 clean:
-	rm -f system-upgrade-fedora
+	rm -f $(BIN) $(GENFILES) $(ARCHIVE)
 
-install: install-scripts install-data
-	$(INSTALL) -d $(libexecdir)
-	$(INSTALL) system-upgrade-fedora $(libexecdir)
+install: $(BIN) $(SCRIPTS) $(DATA)
+	$(INSTALL) $(BIN) $(DESTDIR)$(LIBEXECDIR)
+	$(INSTALL) $(SCRIPTS) $(DESTDIR)$(DRACUTMODDIR)
+	$(INSTALL) -m644 $(DATA) $(DESTDIR)$(DRACUTMODDIR)
 
-install-dirs:
-	$(INSTALL) -d $(dracutdir)/$(system_upgrade_DIR)
-	$(INSTALL) -d $(dracutdir)/$(system_upgrade_fedora_DIR)
+ARCHIVE = fedup-dracut-$(VERSION).tar.xz
+archive: $(ARCHIVE)
+$(ARCHIVE):
+	git archive --format=tar --prefix=fedup-dracut-$(VERSION)/ HEAD \
+	  | xz -c > $@ || rm $@
 
-install-scripts: install-dirs
-	cd $(system_upgrade_DIR); \
-	  $(INSTALL) $(system_upgrade_SCRIPTS) \
-		  $(dracutdir)/$(system_upgrade_DIR)
-	cd $(system_upgrade_fedora_DIR); \
-	  $(INSTALL) $(system_upgrade_fedora_SCRIPTS) \
-	          $(dracutdir)/$(system_upgrade_fedora_DIR)
-
-install-data: install-dirs
-	cd $(system_upgrade_DIR); \
-	  $(INSTALL) -m644 $(system_upgrade_DATA) \
-	                $(dracutdir)/$(system_upgrade_DIR)
-
-.PHONY: all install clean install-dirs install-scripts install-data
+.PHONY: all clean archive install

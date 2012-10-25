@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UPGRADEBIN=/usr/libexec/system-upgrade-fedora
+UPGRADEBIN=@LIBEXECDIR@/system-upgrade-fedora
 
 check() {
     [ -x $UPGRADEBIN ] || return 1

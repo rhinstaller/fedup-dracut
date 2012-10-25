@@ -1,4 +1,4 @@
-%global dracutlibdir %{_prefix}/lib/dracut
+%global dracutmoddir %{_prefix}/lib/dracut
 
 Name:       fedup-dracut
 Version:    0.7
@@ -26,18 +26,20 @@ actually runs the upgrade itself.
 
 
 %build
-make %{?_smp_mflags} dracut CFLAGS="%{optflags}"
+make %{?_smp_mflags} CFLAGS="%{optflags}"
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install-dracut DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT \
+             LIBEXECDIR=%{_libexecdir} \
+             DRACUTMODDIR=%{dracutmoddir}
 
 
 %files
-/usr/libexec/system-upgrade-fedora
-%{dracutlibdir}/modules.d/85system-upgrade-fedora
-%{dracutlibdir}/modules.d/90system-upgrade
+%{_libexecdir}/system-upgrade-fedora
+%{dracutmoddir}/85system-upgrade-fedora
+%{dracutmoddir}/90system-upgrade
 
 %changelog
 * Wed Oct 24 2012 Will Woods <wwoods@redhat.com> 0.7-1
