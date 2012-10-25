@@ -40,9 +40,9 @@ You'll want to build the initramfs on the _newer_ distro version.
     * `glib2-devel`
 . Install dracut modules
     * `make install`, or
-    . `make archive`
-    . `rpmbuild -ta fedup-dracut*.tar.xz`
-    . `rpm -ivh '[freshly-build RPMs]'`
+        .. `make archive`
+        .. `rpmbuild -ta fedup-dracut*.tar.xz`
+        .. `rpm -ivh '[freshly-built RPMs]'`
 . Build upgrade initramfs
     * `OLDTHEME=$(plymouth-set-default-theme)`
     * `plymouth-set-default-theme fedup`
