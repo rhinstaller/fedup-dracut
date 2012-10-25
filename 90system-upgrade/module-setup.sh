@@ -26,8 +26,11 @@ install() {
     # Save UPGRADEROOT for running system
     inst_hook pre-pivot 99 "$moddir/upgrade-pre-pivot.sh"
 
+    # NOTE: 98systemd copies units from here to /run/systemd/system so systemd
+    #       won't lose our units after switch-root.
+    unitdir="/etc/systemd/system"
+
     # Set up systemd target and units
-    unitdir="$systemdsystemunitdir"
     upgrade_wantsdir="${initdir}${unitdir}/upgrade.target.wants"
 
     inst_simple "$moddir/upgrade.target" "$unitdir/upgrade.target"
@@ -41,7 +44,6 @@ install() {
 
     # debug shell service
     basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
-    mkdir -p $basic_wantsdir
     inst_simple "$moddir/upgrade-debug-shell.service" "$unitdir/upgrade-debug-shell.service"
     ln -sf "../upgrade-debug-shell.service" $basic_wantsdir
 }
