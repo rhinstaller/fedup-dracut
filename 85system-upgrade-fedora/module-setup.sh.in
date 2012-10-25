@@ -14,10 +14,10 @@ depends() {
 install() {
     # stuff we need for initial boot
     # ------------------------------
-    # SELinux policy
+    # SELinux policy and contexts
     dracut_install /etc/selinux/config
-    dracut_install /etc/selinux/*/contexts/files/*
     dracut_install /etc/selinux/*/policy/*
+    dracut_install $(find /etc/selinux/*/contexts)
     # script to save initramfs at UPGRADEROOT
     inst_hook pre-pivot 99 "$moddir/keep-initramfs.sh"
     # make sure plymouth gets started in initramfs
