@@ -1,3 +1,4 @@
 *.swp
 system-upgrade-fedora
 85system-upgrade-fedora/module-setup.sh
+fedup-dracut*.tar.xz
