@@ -46,6 +46,7 @@ make install DESTDIR=$RPM_BUILD_ROOT \
              DRACUTMODDIR=%{dracutmoddir}
 
 %files
+%doc README.asciidoc
 %{_libexecdir}/system-upgrade-fedora
 %{dracutmoddir}/85system-upgrade-fedora
 %{dracutmoddir}/90system-upgrade
