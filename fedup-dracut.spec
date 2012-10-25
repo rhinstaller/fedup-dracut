@@ -1,4 +1,4 @@
-%global dracutmoddir %{_prefix}/lib/dracut
+%global dracutmoddir %{_prefix}/lib/dracut/modules.d
 
 Name:       fedup-dracut
 Version:    0.7
