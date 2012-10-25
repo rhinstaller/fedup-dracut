@@ -34,12 +34,19 @@ Building
 You'll want to build the initramfs on the _newer_ distro version.
 
 . Install build requirements
-    * `rpm-devel` >= 4.10.0, `plymouth-devel` >= 0.8.6, `glib2-devel`
+    * `rpm-devel` >= 4.10.0
+    * `plymouth-devel` >= 0.8.6
+    * `systemd` >= 195
+    * `glib2-devel`
 . Install dracut modules
-    * `make install`
+    * `make install`, or
+    . `make archive`
+    . `rpmbuild -ta fedup-dracut*.tar.xz`
+    . `rpm -ivh '[freshly-build RPMs]'`
 . Build upgrade initramfs
+    * `OLDTHEME=$(plymouth-set-default-theme)`
     * `plymouth-set-default-theme fedup`
     * `dracut --add system-upgrade upgrade.img`
-    * `plymouth-set-default-theme [your old theme]`
+    * `plymouth-set-default-theme $OLDTHEME`
 
 // vim: set syn=asciidoc tw=78:
