@@ -11,10 +11,11 @@ Source0:    %{name}-%{version}.tar.xz
 
 Summary:        initramfs environment for system upgrades
 BuildRequires:  rpm-devel >= 4.10.0
+BuildRequires:  plymouth-devel >= 0.8.6
 BuildRequires:  glib2-devel
-#BuildRequires: plymouth-devel >= 0.8.6
 Requires:       rpm >= 4.10.0
 Requires:       plymouth >= 0.8.6
+Requires:       systemd >= 195
 Requires:       dracut
 
 %package plymouth
@@ -56,5 +57,5 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
-* Wed Oct 24 2012 Will Woods <wwoods@redhat.com> 0.7-1
+* Thu Oct 25 2012 Will Woods <wwoods@redhat.com> 0.7-1
 - Initial packaging
