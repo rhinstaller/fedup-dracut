@@ -44,6 +44,7 @@ install() {
 
     # debug shell service
     basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
+    mkdir -p "$basic_wantsdir"
     inst_simple "$moddir/upgrade-debug-shell.service" "$unitdir/upgrade-debug-shell.service"
     ln -sf "../upgrade-debug-shell.service" $basic_wantsdir
 }
