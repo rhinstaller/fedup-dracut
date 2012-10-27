@@ -5,7 +5,7 @@ IgnoreOnIsolate=yes
 ConditionKernelCommandLine=rd.upgrade.debugshell
 
 [Service]
-Environment=TERM=linux PS1="upgrade-debug:\w\$ "
+Environment=TERM=linux PS1=upgrade-debug:\w\$\x20
 ExecStart=/bin/bash -i -l
 Restart=always
 RestartSec=0
