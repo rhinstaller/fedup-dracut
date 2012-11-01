@@ -490,8 +490,8 @@ void *rpm_trans_callback(const void *arg,
         /* RPMRC_OK:        scriptlet failed non-fatally (warning)
          * other:           scriptlet failed, preventing install/erase */
         nvr = headerGetAsString(hdr, RPMTAG_NVR);
-        g_debug("%s_error(\"%s\"): %u", script_type(amount), nvr, total);
-        g_warning("%s %s scriptlet failure in %s (exit code %u)",
+        g_debug("%s_error(\"%s\"): %lu", script_type(amount), nvr, total);
+        g_warning("%s %s scriptlet failure in %s (exit code %lu)",
             total == RPMRC_OK ? "non-fatal" : "fatal",
             script_type(amount), nvr, total);
         /* TODO: show the script contents? */
