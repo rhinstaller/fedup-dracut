@@ -3,10 +3,10 @@
 Name:       fedup-dracut
 Version:    0.7
 Release:    1%{?dist}
-Summary:    the Fedora Upgrade tool
+Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
-URL:        http://github.com/wgwoods/fedup
+URL:        http://github.com/wgwoods/fedup-dracut
 Source0:    %{name}-%{version}.tar.xz
 
 Summary:        initramfs environment for system upgrades
