@@ -6,8 +6,8 @@ Release:    1%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
-URL:        http://github.com/wgwoods/fedup-dracut
-Source0:    %{name}-%{version}.tar.xz
+URL:        https://github.com/wgwoods/fedup-dracut
+Source0:    https://github.com/downloads/wgwoods/fedup-dracut/%{name}-%{version}.tar.xz
 
 Summary:        initramfs environment for system upgrades
 BuildRequires:  rpm-devel >= 4.10.0
