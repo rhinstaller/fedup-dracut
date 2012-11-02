@@ -7,6 +7,8 @@ Before=upgrade.service
 
 [Service]
 Type=oneshot
+# HACK: work around https://bugzilla.redhat.com/show_bug.cgi?id=869061
+ExecStartPre=-/usr/bin/systemctl restart systemd-journald.service
 ExecStart=-/bin/upgrade-pre
 StandardInput=null
 StandardOutput=journal+console
