@@ -21,19 +21,19 @@ do_upgrade() {
     # https://bugzilla.redhat.com/show_bug.cgi?id=844167
     # others to be filed (mysterious initramfs without kernel modules, etc.)
 
-    # FIXME workaround for a dracut bug
+    # workaround for a dracut buglet. FIXME: remove when this patch is upstream:
+    # http://permalink.gmane.org/gmane.linux.kernel.initramfs/2967
     SAVED_NEWROOT="$NEWROOT"
     NEWROOT=''
 
     # and off we go...
-    $UPGRADEBIN --root=/sysroot $args \
-        >> /sysroot/var/log/upgrade.out
-    # FIXME: we're only writing to that log file because our output isn't going
-    # to journald - see https://bugzilla.redhat.com/show_bug.cgi?id=869061
+    $UPGRADEBIN --root=/sysroot $args
 
     # restore things twiddled by workarounds above. TODO: remove!
     NEWROOT="$SAVED_NEWROOT"
     echo $enforce > /sys/fs/selinux/enforce
 }
+
+[ ! -x "$UPGRADEBIN" ] && warn "upgrade binary '$UPGRADEBIN' missing!" && return
 
 do_upgrade
