@@ -1,0 +1,22 @@
+i18n::
+  * Mark strings for translation in `system-upgrade-fedora.c`
+
+Post-upgrade cleanup::
+  * Remove packagedir / cachedir
+  * Remove *System Upgrade* boot item
+
+Docs::
+  * man pages like whoa
+  * document boot args (rd.upgrade.*)
+
+Improve progress reporting::
+  * invoke a callback during pre-transaction file scanning
+  * use RPMCALLBACK_*_PROGRESS for finer-grained progress
+  * count %posttrans scripts, take %posttrans into account for upgrade progress
+
+Upstreaming::
+  * get 90system-upgrade upstream
+
+Backup/restore::
+  * If possible, take LVM/btrfs snapshot before upgrade
+  * On failure, restore snapshot
