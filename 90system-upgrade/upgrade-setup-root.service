@@ -1,0 +1,22 @@
+[Unit]
+Description=Set Up Root For Upgrade
+Documentation=man:upgrade-setup-root.service(8)
+DefaultDependencies=no
+ConditionPathExists=/etc/initrd-release
+ConditionPathExists=/run/initramfs/upgrade.conf
+After=dracut-pre-pivot.service
+OnFailure=emergency.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/run/initramfs/upgrade.conf
+ExecStartPre=/usr/bin/mount --rbind /proc ${NEWROOT}/proc
+ExecStartPre=/usr/bin/mount --rbind /sys ${NEWROOT}/sys
+ExecStartPre=/usr/bin/mount --rbind /dev ${NEWROOT}/dev
+ExecStartPre=/usr/bin/mount --rbind /run ${NEWROOT}/run
+ExecStartPre=/usr/bin/mount -o remount,rw ${NEWROOT}
+ExecStart=/usr/sbin/chroot ${NEWROOT} mount --verbose --all
+ExecStart=/usr/sbin/chroot ${NEWROOT} swapon --all
+ExecStopPost=/usr/bin/systemctl --no-block isolate upgrade.target
+StandardOutput=journal
+StandardError=journal+console

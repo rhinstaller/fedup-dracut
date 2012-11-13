@@ -26,11 +26,16 @@ install() {
     # Save UPGRADEROOT, UPGRADELINK for running system
     inst_hook pre-pivot 99 "$moddir/upgrade-pre-pivot.sh"
 
-    # NOTE: 98systemd copies units from here to /run/systemd/system so systemd
-    #       won't lose our units after switch-root.
     unitdir="/etc/systemd/system"
 
-    # Set up systemd target and units
+    # Install upgrade-setup-root.service and target
+    inst_simple "$moddir/upgrade-setup-root.target" \
+                "$unitdir/upgrade-setup-root.target"
+    inst_simple "$moddir/upgrade-setup-root.service" \
+                "$unitdir/upgrade-setup-root.service"
+    dracut_install chroot systemd-nspawn
+
+    # Set up upgrade.target and units
     upgrade_wantsdir="${initdir}${unitdir}/upgrade.target.wants"
 
     inst_simple "$moddir/upgrade.target" "$unitdir/upgrade.target"

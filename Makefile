@@ -14,6 +14,8 @@ dracut_SCRIPTS = 90system-upgrade/module-setup.sh \
 		 90system-upgrade/upgrade-post.sh
 dracut_DATA = 90system-upgrade/README.txt \
 	      90system-upgrade/dracut-pre-pivot.service \
+	      90system-upgrade/upgrade-setup-root.target \
+	      90system-upgrade/upgrade-setup-root.service \
 	      90system-upgrade/upgrade.target \
 	      90system-upgrade/upgrade-pre.service \
 	      90system-upgrade/upgrade.service \

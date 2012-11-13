@@ -1,0 +1,10 @@
+[Unit]
+Description=Set Up Root For Upgrade
+DefaultDependencies=no
+Requires=basic.target upgrade-setup-root.service
+After=basic.target cryptsetup.target
+Before=upgrade-setup-root.service
+Conflicts=initrd-switch-root.target
+AllowIsolate=yes
+ConditionPathExists=/etc/initrd-release
+ConditionPathExists=/run/initramfs/upgrade.conf
