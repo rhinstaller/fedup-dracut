@@ -1,4 +1,5 @@
 %global dracutmoddir %{_prefix}/lib/dracut/modules.d
+%global plymouthver 0.8.6
 
 Name:       fedup-dracut
 Version:    0.7
@@ -11,17 +12,17 @@ Source0:    https://github.com/downloads/wgwoods/fedup-dracut/%{name}-%{version}
 
 Summary:        initramfs environment for system upgrades
 BuildRequires:  rpm-devel >= 4.10.0
-BuildRequires:  plymouth-devel >= 0.8.6
+BuildRequires:  plymouth-devel >= %{plymouthver}
 BuildRequires:  glib2-devel
 Requires:       rpm >= 4.10.0
-Requires:       plymouth >= 0.8.6
+Requires:       plymouth >= %{plymouthver}
 Requires:       systemd >= 195
 Requires:       dracut
 
 %package plymouth
 BuildRequires:  plymouth-devel
 BuildArch:      noarch
-Requires:       plymouth
+Requires:       plymouth-plugin-two-step >= %{plymouthver}
 Summary:        plymouth theme for system upgrade progress
 
 %description
