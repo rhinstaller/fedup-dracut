@@ -3,7 +3,7 @@
 
 Name:       fedup-dracut
 Version:    0.7
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
@@ -58,5 +58,11 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Wed Nov 14 2012 Will Woods <wwoods@redhat.com> 0.7-2
+- Awful hack to make journal work
+- Send output to systemd journal
+- Fix Requires: for fedup-dracut-plymouth
+- Awful hack to make sure data gets written before reboot
+
 * Thu Oct 25 2012 Will Woods <wwoods@redhat.com> 0.7-1
 - Initial packaging
