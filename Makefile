@@ -25,7 +25,6 @@ dracut_DATA = 90system-upgrade/README.txt \
 fedora_DIR = $(DRACUTMODDIR)/85system-upgrade-fedora
 fedora_BIN = system-upgrade-fedora
 fedora_SCRIPTS = 85system-upgrade-fedora/module-setup.sh \
-		 85system-upgrade-fedora/keep-initramfs.sh \
 		 85system-upgrade-fedora/do-upgrade.sh \
 		 85system-upgrade-fedora/save-journal.sh
 
