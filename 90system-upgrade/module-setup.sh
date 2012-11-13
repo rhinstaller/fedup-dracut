@@ -42,10 +42,16 @@ install() {
         ln -sf "../$s.service" $upgrade_wantsdir
     done
 
-    # debug shell service
+    # WORKAROUND: don't shut everything down at the end of pre-pivot!
+    inst_simple "$moddir/dracut-pre-pivot.service" \
+                "$unitdir/dracut-pre-pivot.service"
+    inst_script "$moddir/initrd-switch-root.sh" \
+                "/bin/initrd-switch-root"
+
+    # bonus: debug shell service
     basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
     mkdir -p "$basic_wantsdir"
-    inst_simple "$moddir/upgrade-debug-shell.service" "$unitdir/upgrade-debug-shell.service"
+    inst_simple "$moddir/upgrade-debug-shell.service" \
+                "$unitdir/upgrade-debug-shell.service"
     ln -sf "../upgrade-debug-shell.service" $basic_wantsdir
 }
-

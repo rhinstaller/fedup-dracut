@@ -6,12 +6,14 @@ DRACUTMODDIR=/usr/lib/dracut/modules.d
 
 dracut_DIR = $(DRACUTMODDIR)/90system-upgrade
 dracut_SCRIPTS = 90system-upgrade/module-setup.sh \
+	         90system-upgrade/initrd-switch-root.sh \
 		 90system-upgrade/upgrade-init.sh \
 		 90system-upgrade/upgrade-pre-pivot.sh \
 		 90system-upgrade/upgrade-pre.sh \
 		 90system-upgrade/upgrade.sh \
 		 90system-upgrade/upgrade-post.sh
 dracut_DATA = 90system-upgrade/README.txt \
+	      90system-upgrade/dracut-pre-pivot.service \
 	      90system-upgrade/upgrade.target \
 	      90system-upgrade/upgrade-pre.service \
 	      90system-upgrade/upgrade.service \
