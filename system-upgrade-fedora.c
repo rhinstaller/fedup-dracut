@@ -236,10 +236,10 @@ int installonly(Header hdr) {
         goto out;
 
     /* check to see if any of the Provides: match any installonly items */
-    while (prov = rpmtdNextString(provides)) {
+    while ((prov = rpmtdNextString(provides))) {
         for (p = installonly_items; *p; p++) {
             if (strcmp(*p, prov) == 0) {
-                g_debug("%s is installonly (prov: s)",
+                g_debug("%s is installonly (prov: %s)",
                         headerGetString(hdr, RPMTAG_NAME), prov);
                 rc = 1;
                 goto out;
