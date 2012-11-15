@@ -2,8 +2,8 @@
 %global plymouthver 0.8.6
 
 Name:       fedup-dracut
-Version:    0.7
-Release:    2%{?dist}
+Version:    0.7.1
+Release:    1%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
@@ -58,6 +58,9 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Thu Nov 15 2012 Will Woods <wwoods@redhat.com> 0.7.1-1
+- install new kernel without removing old ones (#876366)
+
 * Wed Nov 14 2012 Will Woods <wwoods@redhat.com> 0.7-2
 - Awful hack to make journal work
 - Send output to systemd journal
