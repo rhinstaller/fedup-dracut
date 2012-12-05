@@ -2,8 +2,8 @@
 %global plymouthver 0.8.6
 
 Name:       fedup-dracut
-Version:    0.7.1
-Release:    1%{?dist}
+Version:    0.7.2
+Release:    0.git20121205%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
@@ -58,6 +58,9 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Wed Dec 05 2012 Will Woods <wwoods@redhat.com> 0.7.2-1
+- Remove awful hack to forcibly sync data to disk (fixed in systemd 195-8)
+
 * Thu Nov 15 2012 Will Woods <wwoods@redhat.com> 0.7.1-1
 - install new kernel without removing old ones (#876366)
 
