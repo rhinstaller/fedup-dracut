@@ -21,7 +21,6 @@
  *       Use RPMCALLBACK_*_PROGRESS to update progress before/between packages
  *       Invoke callback for pre-transaction file scanning
  *       Translation/i18n
- *       Clean out packagedir after upgrade
  *       Take btrfs/LVM snapshot before upgrade and revert on failure
  */
 
