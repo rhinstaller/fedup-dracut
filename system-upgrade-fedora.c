@@ -681,9 +681,6 @@ int main(int argc, char* argv[]) {
     packagedir = g_build_filename(root, link_target, NULL);
     g_debug("%s -> %s", symlink, packagedir);
 
-    /* delete the symlink immediately (avoid reboot loop if we crash..) */
-    if (!testing)
-        g_unlink(symlink);
     g_free(symlink);
     g_free(link_target);
 
