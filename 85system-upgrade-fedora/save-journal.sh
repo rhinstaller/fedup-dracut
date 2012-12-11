@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "all upgrade scripts finished"
+echo "writing logs to disk and rebooting"
+
 logpath=/sysroot/var/log/upgrade
 
 simple_backup() {
