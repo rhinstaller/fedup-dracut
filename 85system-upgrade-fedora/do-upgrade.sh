@@ -14,8 +14,10 @@ do_upgrade() {
     # FIXME: THIS IS A BIG STUPID HAMMER AND WE SHOULD ACTUALLY SOLVE THE ROOT
     # PROBLEMS RATHER THAN JUST PAPERING OVER THE WHOLE THING. But this is what
     # Anaconda did, and upgrades don't seem to work otherwise, so...
-    enforce=$(< /sys/fs/selinux/enforce)
-    getargbool 0 enforcing || echo 0 > /sys/fs/selinux/enforce
+    if [ -f /sys/fs/selinux/enforce ]; then
+        enforce=$(< /sys/fs/selinux/enforce)
+        getargbool 0 enforcing || echo 0 > /sys/fs/selinux/enforce
+    fi
     # Some bugs this works around:
     # https://bugzilla.redhat.com/show_bug.cgi?id=841451
     # https://bugzilla.redhat.com/show_bug.cgi?id=844167
@@ -31,7 +33,9 @@ do_upgrade() {
 
     # restore things twiddled by workarounds above. TODO: remove!
     NEWROOT="$SAVED_NEWROOT"
-    echo $enforce > /sys/fs/selinux/enforce
+    if [ -f /sys/fs/selinux/enforce ]; then
+        echo $enforce > /sys/fs/selinux/enforce
+    fi
 }
 
 [ ! -x "$UPGRADEBIN" ] && warn "upgrade binary '$UPGRADEBIN' missing!" && return
