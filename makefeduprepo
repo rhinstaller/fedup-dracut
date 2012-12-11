@@ -1,0 +1,108 @@
+#!/bin/bash
+#
+# makefeduprepo - quick script to make a fedup-usable instrepo for testing
+#
+# Copyright (C) 2012 Red Hat Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Will Woods <wwoods@redhat.com>
+
+
+# constants and helper functions!
+# -------------------------------
+export PLYMOUTH_THEME_NAME=fedup
+KERNELPATH=vmlinuz
+UPGRADEPATH=upgrade.img
+die() { echo $(basename $0): error: $@ >&2; exit 1; }
+sha256() { set -- $(sha256sum $1); echo "sha256:$1"; }
+
+
+# argument validation stuff!
+# --------------------------
+repodir="$1"
+kver="${2:-$(uname -r)}"
+
+[ -z "$1" ] && echo "usage: makefeduprepo REPODIR [KERNELVER]" && exit 1
+[ -d "$repodir" ] || die "directory $repodir doesn't exist. create it first."
+[ -f $repodir/repodata/repomd.xml ] || createrepo=1
+
+source /etc/os-release
+
+kernel="/boot/vmlinuz-$kver" # NOTE: distro-specific
+
+# sanity checks!
+# --------------
+[ -f "$kernel" ] || die "can't find kernel $kernel"
+[ -d "/lib/modules/$kver" ] || die "can't find modules for kernel $kver"
+
+command -v dracut >/dev/null || die "can't find dracut"
+dracut --list-modules 2>/dev/null | grep -q system-upgrade || \
+    die "dracut can't find system-upgrade module. install fedup-dracut."
+
+if [ $createrepo ]; then
+    command -v createrepo >/dev/null || die "can't find createrepo"
+fi
+
+
+# actual repo creation!
+# ---------------------
+[ $(id -u) = 0 ] || die "be root."
+# make leading dirs
+echo "creating fedup-capable repo at $repodir"
+mkdir -p "$repodir/$(dirname $KERNELPATH)" \
+         "$repodir/$(dirname $UPGRADEPATH)" || \
+    die "failed to make required directories."
+
+# copy kernel into place
+echo "* copying kernel to $KERNELPATH"
+cp -f $kernel "$repodir/$KERNELPATH" || \
+    die "couldn't copy kernel."
+
+# build upgrade.img
+echo "* building $UPGRADEPATH (this will take a moment..)"
+dracut --force --add system-upgrade "$repodir/$UPGRADEPATH" $kver || \
+    die "dracut failed to build upgrade.img."
+
+# write .treeinfo
+echo "* writing .treeinfo"
+arch=$(uname -m)
+cat > $repodir/.treeinfo << __EOT__ || die "couldn't write .treeinfo"
+[general]
+family = fedup
+timestamp = $(date '+%s')
+arch = $arch
+version = ${VERSION_ID:-0}
+
+[images-$arch]
+kernel = $KERNELPATH
+upgrade = $UPGRADEPATH
+
+[checksums]
+$KERNELPATH = $(sha256 "$repodir/$KERNELPATH")
+$UPGRADEPATH = $(sha256 "$repodir/$UPGRADEPATH")
+__EOT__
+
+
+# create repodata if necessary
+if [ $createrepo ]; then
+    echo "* creating repodata"
+    createrepo $repodir >/dev/null || die "createrepo failed."
+else
+    echo "* repodata exists, skipping createrepo"
+fi
+
+chmod -R a+r $repodir
+
+echo "done."
