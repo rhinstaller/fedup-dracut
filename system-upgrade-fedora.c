@@ -54,7 +54,6 @@ guint erasecount = 0;     /* number of erases in transaction */
 
 /* commandline options */
 static gboolean testing = FALSE;
-static gboolean reboot = FALSE;
 static gboolean plymouth = FALSE;
 static gboolean plymouth_verbose = FALSE;
 static gboolean debug = FALSE;
@@ -66,8 +65,6 @@ static GOptionEntry options[] =
         "Test mode - don't actually install anything", NULL },
     { "root", 'r', 0, G_OPTION_ARG_FILENAME, &root,
         "Top level directory for upgrade (default: \"/\")", NULL },
-    { "reboot", 'b', 0, G_OPTION_ARG_NONE, &reboot,
-        "Reboot after upgrade", NULL },
     { "plymouth", 'p', 0, G_OPTION_ARG_NONE, &plymouth,
         "Show progress on plymouth splash screen", NULL },
     { "verbose", 'v', 0, G_OPTION_ARG_NONE, &plymouth_verbose,
@@ -648,9 +645,6 @@ int main(int argc, char* argv[]) {
     if (g_getenv("UPGRADE_TEST") != NULL)
         testing = TRUE;
 
-    if (testing)
-        reboot = FALSE;
-
     if (plymouth) {
         if (!plymouth_setup()) {
             g_warning("Disabling plymouth output");
@@ -736,9 +730,5 @@ out:
         g_free(packagedir);
     if (files != NULL)
         g_strfreev(files);
-    if (reboot)
-        call("/usr/bin/systemctl --fail --no-block reboot", NULL);
-    else
-        g_debug("skipping reboot");
     return retval;
 }
