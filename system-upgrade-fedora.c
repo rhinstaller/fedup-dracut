@@ -43,9 +43,12 @@
 #define UPGRADE_FILELIST "package.list"
 
 /* How much of the progress bar should each phase use? */
-#define TRANS_PERCENT 2    /* FIXME should be 5% so we see initial progress */
+#define SETUP_PERCENT 4
+#define TRANS_PERCENT 2
+#define INSTALL_BASE_PERCENT (SETUP_PERCENT+TRANS_PERCENT)
 #define INSTALL_PERCENT 70
-#define ERASE_PERCENT 28
+#define ERASE_PERCENT 24
+/* TODO: add POSTTRANS_PERCENT */
 
 /* globals */
 gchar *packagedir = NULL; /* target of UPGRADE_SYMLINK */
@@ -306,6 +309,7 @@ rpmts setup_transaction(gchar *files[]) {
     gchar **file = NULL;
     gint rc = 1;
     guint numfiles = 0;
+    guint setup=0, prevpercent=0, percent=0;
 
     /* Read config and initialize transaction */
     rpmReadConfigFiles(NULL, NULL);
@@ -315,6 +319,8 @@ rpmts setup_transaction(gchar *files[]) {
     /* Disable signature checking, as anaconda did */
     rpmtsSetVSFlags(ts, rpmtsVSFlags(ts) | _RPMVSF_NOSIGNATURES);
 
+    /* Make plymouth progress bar show signs of life */
+    set_plymouth_percent(1);
 
     /* Populate the transaction */
     numfiles = g_strv_length(files);
@@ -323,6 +329,9 @@ rpmts setup_transaction(gchar *files[]) {
     for (file = files; *file && **file; file++) {
         if (add_upgrade(ts, *file))
             g_warning("couldn't add %s to the transaction", *file);
+        percent = (++setup*SETUP_PERCENT) / numfiles;
+        if (percent > prevpercent)
+            set_plymouth_percent(percent);
         /* Ignore errors, just like anaconda did */
     }
 
@@ -341,6 +350,9 @@ rpmts setup_transaction(gchar *files[]) {
         g_warning("nothing to upgrade");
         goto fail;
     }
+
+    /* We should be finished with the time-consuming bits of setup here. */
+    set_plymouth_percent(SETUP_PERCENT);
 
     /* Check transaction */
     g_message("checking RPM transaction...");
@@ -435,7 +447,7 @@ void *rpm_trans_callback(const void *arg,
         g_message("preparing RPM transaction, one moment...");
         break;
     case RPMCALLBACK_TRANS_PROGRESS:
-        /* FIXME: track progress up to TRANS_PERCENT */
+        /* FIXME: track progress from SETUP_PERCENT to INSTALL_BASE_PERCENT */
         break;
     case RPMCALLBACK_TRANS_STOP:
         g_debug("trans_stop()");
@@ -466,7 +478,7 @@ void *rpm_trans_callback(const void *arg,
         rpmShowProgress(arg, what, amount, total, key, NULL);
         /* NOTE: we do this here 'cuz test transactions don't do start/stop */
         installed++;
-        percent = TRANS_PERCENT + \
+        percent = INSTALL_BASE_PERCENT + \
                     ((INSTALL_PERCENT*installed) / installcount);
         if (percent > prevpercent) {
             set_plymouth_percent(percent);
@@ -489,7 +501,7 @@ void *rpm_trans_callback(const void *arg,
         nvr = headerGetAsString(hdr, RPMTAG_NVR);
         g_debug("uninst_stop(\"%s\")", nvr);
         erased++;
-        percent = TRANS_PERCENT + INSTALL_PERCENT + \
+        percent = INSTALL_BASE_PERCENT + INSTALL_PERCENT + \
                     ((ERASE_PERCENT*erased) / erasecount);
         if (percent > prevpercent) {
             set_plymouth_percent(percent);
