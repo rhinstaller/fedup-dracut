@@ -77,29 +77,10 @@ static GOptionEntry options[] =
     { NULL }
 };
 
-/* simple convenience function for calling external binaries */
-gboolean call(const gchar *cmd, const gchar *arg) {
-    GError *error = NULL;
-    gchar *command = NULL;
-    gboolean retval;
-    if (arg != NULL)
-        command = g_strdup_printf(cmd, arg);
-    else
-        command = g_strdup(cmd);
-    retval = g_spawn_command_line_async(command, &error);
-    if (!retval) {
-        g_warning("failed to spawn \"%s\": %s", command, error->message);
-        g_error_free(error);
-    }
-    g_free(command);
-    return retval;
-}
-
 /******************
  * Plymouth stuff *
  ******************/
 
-#ifdef USE_PLYMOUTH_LIBS
 #include "ply-boot-client.h"
 
 typedef struct
@@ -178,39 +159,6 @@ void plymouth_finish(void) {
     ply_boot_client_free(ply.client);
     ply_event_loop_free(ply.loop);
 }
-
-#else /* !USE_PLYMOUTH_LIBS */
-
-/* just see if plymouth is alive */
-gboolean plymouth_setup(void) {
-    return call("plymouth --ping", NULL);
-}
-
-/* display-message <text> */
-gboolean set_plymouth_message(const gchar *message) {
-    gboolean retval = TRUE;
-    if (!plymouth)
-        return TRUE;
-    if (message == NULL || *message == '\0')
-        retval = call("plymouth hide-message --text=\"%s\"", message);
-    else
-        retval = call("plymouth display-message --text=\"%s\"", message);
-    return retval;
-}
-
-/* system-update <progress-percent> */
-gboolean set_plymouth_percent(const guint percent) {
-    gboolean retval = TRUE;
-    gchar *percentstr;
-    if (!plymouth)
-        return TRUE;
-    percentstr = g_strdup_printf("%u", percent);
-    retval = call("plymouth system-update --progress=%s", percentstr);
-    g_free(percentstr);
-    return retval;
-}
-
-#endif /* USE_PLYMOUTH_LIBS */
 
 /*************************
  * RPM transaction stuff *

@@ -40,10 +40,7 @@ BIN = $(fedora_BIN)
 
 all: $(SCRIPTS) $(DATA) $(BIN)
 
-PACKAGES=glib-2.0 rpm
-# TODO: use ply-boot-client
-#PACKAGES+=ply-boot-client
-#CFLAGS+=-DUSE_PLYMOUTH_LIBS
+PACKAGES=glib-2.0 rpm ply-boot-client
 
 $(BIN): %: %.c
 	$(CC) $(shell pkg-config $(PACKAGES) --cflags --libs) $(CFLAGS) $< -o $@
