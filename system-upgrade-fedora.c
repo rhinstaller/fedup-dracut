@@ -173,6 +173,12 @@ gboolean plymouth_setup(void) {
     return plymouth_ok;
 }
 
+void plymouth_finish(void) {
+    set_plymouth_percent(100);
+    ply_boot_client_free(ply.client);
+    ply_event_loop_free(ply.loop);
+}
+
 #else /* !USE_PLYMOUTH_LIBS */
 
 /* just see if plymouth is alive */
@@ -725,7 +731,7 @@ int main(int argc, char* argv[]) {
         retval = EXIT_SUCCESS;
     }
 
-    /* TODO: plymouth_finish() (disconnect and/or force progress to 100%) */
+    plymouth_finish();
 
     /* cleanup */
     g_debug("cleaning up...");
