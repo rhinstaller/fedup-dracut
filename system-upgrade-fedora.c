@@ -17,7 +17,7 @@
  *
  * Author(s): Will Woods <wwoods@redhat.com>
  *
- * TODO: PLYMOUTH_LIBS stuff is untested/unused
+ * TODO:
  *       Use RPMCALLBACK_*_PROGRESS to update progress before/between packages
  *       Invoke callback for pre-transaction file scanning
  *       Translation/i18n
@@ -117,7 +117,7 @@ void ply_success(void *user_data, ply_boot_client_t *client) {
 void ply_failure(void *user_data, ply_boot_client_t *client) {
     ply_event_loop_exit(ply.loop, FALSE);
 }
-void ply_disconnect(void *unused) {
+void ply_disconnect(void *user_data) {
     g_warning("unexpectedly disconnected from plymouth");
     plymouth = FALSE;
     ply_event_loop_exit(ply.loop, FALSE);
@@ -128,6 +128,7 @@ void ply_disconnect(void *unused) {
 gboolean set_plymouth_message(const gchar *message) {
     if (!plymouth)
         return TRUE;
+    ply_boot_client_attach_to_event_loop(ply.client, ply.loop);
     if (message == NULL || *message == '\0')
         ply_boot_client_tell_daemon_to_hide_message(ply.client, message,
                                                 ply_success, ply_failure, &ply);
@@ -143,6 +144,7 @@ gboolean set_plymouth_percent(const guint percent) {
     if (!plymouth)
         return TRUE;
     percentstr = g_strdup_printf("%u", percent);
+    ply_boot_client_attach_to_event_loop(ply.client, ply.loop);
     ply_boot_client_system_update(ply.client, percentstr,
                                   ply_success, ply_failure, &ply);
     g_free(percentstr); /* this is OK - plymouth strdups percentstr */
@@ -157,22 +159,17 @@ gboolean plymouth_setup(void) {
 
     if (!ply_boot_client_connect(ply.client,
             (ply_boot_client_disconnect_handler_t) ply_disconnect,
-            NULL)) {
+            &ply)) {
         g_warning("Couldn't connect to plymouth");
-        goto out;
+        return FALSE;
     }
 
     ply_boot_client_attach_to_event_loop(ply.client, ply.loop);
     ply_boot_client_ping_daemon(ply.client, ply_success, ply_failure, &ply);
     plymouth_ok = ply_event_loop_run(ply.loop);
 
-out:
-    if (!plymouth_ok) {
+    if (!plymouth_ok)
         ply_boot_client_free(ply.client);
-        ply_event_loop_free(ply.loop);
-        ply.client = NULL;
-        ply.loop = NULL;
-    }
     return plymouth_ok;
 }
 
