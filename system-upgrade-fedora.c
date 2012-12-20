@@ -679,7 +679,8 @@ int main(int argc, char* argv[]) {
         retval = EXIT_SUCCESS;
     }
 
-    plymouth_finish();
+    if (plymouth)
+        plymouth_finish();
 
     /* cleanup */
     g_debug("cleaning up...");
