@@ -6,11 +6,26 @@ Docs::
   * document boot args (rd.upgrade.*)
 
 Improve progress reporting::
+  * change /etc/*-release so "Welcome to XXX" message says "Welcome to fedup"
   * count %posttrans scripts, take %posttrans into account for upgrade progress
   * use RPMCALLBACK_*_PROGRESS for finer-grained progress
+  * invoke a callback during pre-transaction RPM header scanning
+  * Fancier plymouth theme
+
+Error detection / reporting / handling::
+  * Find a way to get journald to log to disk *temporarily*
+  ** Or use plymouthd's logging somehow
+  * Fail if some packages are missing
+  ** Allow override via commandline arg?
+  * Add a 'upgrade-failure' callback (for e.g. restoring a backup)
+
+Debugging::
+  * shell on tty2 by default
+  ** change prompt depending on which phase it's in
 
 Upstreaming::
   * get 90system-upgrade upstream
+  * get save-initramfs.sh into upstream dracut
 
 Backup/restore::
   * If possible, take LVM/btrfs snapshot before upgrade

@@ -16,12 +16,6 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author(s): Will Woods <wwoods@redhat.com>
- *
- * TODO:
- *       Use RPMCALLBACK_*_PROGRESS to update progress before/between packages
- *       Invoke callback for pre-transaction file scanning
- *       Translation/i18n
- *       Take btrfs/LVM snapshot before upgrade and revert on failure
  */
 
 #include <stdlib.h>
