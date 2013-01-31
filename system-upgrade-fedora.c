@@ -586,7 +586,6 @@ int main(int argc, char* argv[]) {
 
     /* setup */
     setlocale(LC_ALL, "");
-    /* g_type_init(); */
     g_log_set_handler(NULL, G_LOG_LEVEL_MASK, log_handler, NULL);
 
 
