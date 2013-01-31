@@ -2,8 +2,8 @@
 %global plymouthver 0.8.6
 
 Name:       fedup-dracut
-Version:    0.7.2
-Release:    1%{?dist}
+Version:    0.7.3
+Release:    0%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
 License:    GPLv2+
@@ -48,7 +48,7 @@ make install DESTDIR=$RPM_BUILD_ROOT \
              DRACUTMODDIR=%{dracutmoddir}
 
 %files
-%doc README.asciidoc TODO.asciidoc COPYING
+%doc README.asciidoc TODO.asciidoc COPYING makefeduprepo
 %{_libexecdir}/system-upgrade-fedora
 %{dracutmoddir}/85system-upgrade-fedora
 %{dracutmoddir}/90system-upgrade
@@ -58,6 +58,9 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Thu Jan 31 2013 Will Woods <wwoods@redhat.com> 0.7.3-0
+- Include 'makefeduprepo' script
+
 * Wed Dec 05 2012 Will Woods <wwoods@redhat.com> 0.7.2-1
 - Remove awful hack to forcibly sync data to disk (fixed in systemd 195-8)
 - Clean up after upgrade finishes
