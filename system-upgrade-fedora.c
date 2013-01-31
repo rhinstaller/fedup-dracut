@@ -586,6 +586,9 @@ int main(int argc, char* argv[]) {
 
     /* setup */
     setlocale(LC_ALL, "");
+    bindtextdomain(GETTEXT_PACKAGE, "/usr/share/locale");
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
     g_log_set_handler(NULL, G_LOG_LEVEL_MASK, log_handler, NULL);
 
 
