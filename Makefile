@@ -46,7 +46,9 @@ $(BIN): %: %.c
 	$(CC) $(shell pkg-config $(PACKAGES) --cflags --libs) $(CFLAGS) $< -o $@
 
 $(GENFILES): %: %.in
-	$(SED) 's,@LIBEXECDIR@,$(LIBEXECDIR),g' $< > $@
+	$(SED) -e 's,@LIBEXECDIR@,$(LIBEXECDIR),g' \
+	       -e 's,@VERSION@,$(VERSION),g' \
+	       $< > $@
 
 clean:
 	rm -f $(BIN) $(GENFILES) $(ARCHIVE)
