@@ -33,3 +33,9 @@ bind_into_newroot() {
 
 # make our kernel modules available inside the system so we can load drivers
 bind_into_newroot lib/modules/$(uname -r)
+
+# plymouthd will crash if it tries to load a plymouth module from a previous
+# version that was ABI-incompatible (e.g. F17 label.so in F18 plymouthd).
+plydir=lib/plymouth
+[ -d /$plydir ] || plydir=lib64/plymouth
+bind_into_newroot $plydir
