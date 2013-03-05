@@ -14,10 +14,22 @@ mount -t tmpfs -o mode=755 tmpfs "$upgradedir" \
 
 cp -ax / "$upgradedir" || die "failed to save initramfs to $upgradedir"
 
-moddir=lib/modules/$(uname -r)
-echo "making /$moddir available inside $NEWROOT"
-mount -o remount,rw $NEWROOT
-mkdir -p $NEWROOT/$moddir
-mount -o remount $NEWROOT
-mount --bind $upgradedir/$moddir $NEWROOT/$moddir \
-    || warn "failed to bind /$moddir into $NEWROOT"
+bind_into_newroot() {
+    local dir="$1"
+    echo "making /$dir available inside $NEWROOT"
+    if [ ! -d $NEWROOT/$dir ]; then
+        # attempt to create the dir if it's not already present.
+        # NOTE: this is somewhat unreliable and should be avoided if possible,
+        # e.g. by making sure the required dirs exist before reboot
+        mount -o remount,rw $NEWROOT
+        mkdir -p $NEWROOT/$dir
+        mount -o remount $NEWROOT
+    fi
+    mount --bind $upgradedir/$dir $NEWROOT/$dir \
+        || warn "failed to bind /$dir into $NEWROOT"
+    # leave a note for upgrade-prep.service
+    > $NEWROOT/$dir/.please-unmount
+}
+
+# make our kernel modules available inside the system so we can load drivers
+bind_into_newroot lib/modules/$(uname -r)
