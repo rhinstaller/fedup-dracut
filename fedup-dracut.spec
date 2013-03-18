@@ -58,8 +58,9 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
-* Thu Jan 31 2013 Will Woods <wwoods@redhat.com> 0.7.3-0
+* Mon Mar 18 2013 Will Woods <wwoods@redhat.com> 0.7.3-0
 - Include 'makefeduprepo' script
+- Fix plymouthd crash with encrypted /home (#896023)
 
 * Wed Dec 05 2012 Will Woods <wwoods@redhat.com> 0.7.2-1
 - Remove awful hack to forcibly sync data to disk (fixed in systemd 195-8)
