@@ -4,29 +4,38 @@ Will Woods <wwoods@redhat.com>
 
 This is 'fedup-dracut', the initramfs environment for Fedora Upgrades.
 
-It has the following components:
+Components
+----------
 
-`90system-upgrade/`::
-    This module provides a (distro-neutral) framework for running upgrades.
-    * Adds three dracut hooks: `upgrade-pre`, `upgrade`, and `upgrade-post`.
-    * Adds `upgrade.target`, which runs the above hooks (in order)
-    * Automatically includes any other modules named `system-upgrade-*`
-    * Defines `UPGRADEROOT` and `UPGRADELINK` paths
-    * Saves those to `/run/initramfs/upgrade.conf` if both exist
-    * 'BONUS:' adds upgrade-debug-shell.service
+It has the following parts:
 
-`85system-upgrade-fedora/`::
-    This is the Fedora 'system-upgrade' implementation.
-    * Includes upgrade tool, SELinux policy, plymouth, etc.
-    * Copies initramfs to `$UPGRADEROOT`
-    * Runs 'system-upgrade-fedora' binary in the `upgrade` hook
-    * Save log & journal to `/var/log/upgrade.{log,journal}` before reboot
+`90system-upgrade/`
+~~~~~~~~~~~~~~~~~~~
+This module provides a (distro-neutral) framework for running upgrades.
 
-`system-upgrade-fedora.c`::
-    The actual upgrade tool.
-    * Upgrades system using packages from `$UPGRADELINK`
-    * Sends progress updates to `plymouthd`
-    * Sends status output to console + journal
+* Adds three dracut hooks: `upgrade-pre`, `upgrade`, and `upgrade-post`.
+* Adds `upgrade.target`, which runs the above hooks (in order)
+* Automatically includes any other modules named `system-upgrade-*`
+* Defines `UPGRADEROOT` and `UPGRADELINK` paths
+* Saves those to `/run/initramfs/upgrade.conf` if both exist
+* 'BONUS:' adds upgrade-debug-shell.service
+
+`85system-upgrade-fedora/`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is the Fedora 'system-upgrade' implementation.
+
+* Includes upgrade tool, SELinux policy, plymouth, etc.
+* Copies initramfs to `$UPGRADEROOT`
+* Runs 'system-upgrade-fedora' binary in the `upgrade` hook
+* Save log & journal to `/var/log/upgrade.{log,journal}` before reboot
+
+`system-upgrade-fedora.c`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+The actual upgrade tool.
+
+* Upgrades system using packages from `$UPGRADELINK`
+* Sends progress updates to `plymouthd`
+* Sends status output to console + journal
 
 The actual upgrade setup is handled in the main 'fedup' package, which can be
 found here: https://github.com/wgwoods/fedup
