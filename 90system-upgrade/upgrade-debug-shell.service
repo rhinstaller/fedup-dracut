@@ -2,6 +2,7 @@
 Description=Debug root shell on tty2
 DefaultDependencies=no
 IgnoreOnIsolate=yes
+Conflicts=shutdown.target
 ConditionKernelCommandLine=rd.upgrade.debugshell
 
 [Service]
