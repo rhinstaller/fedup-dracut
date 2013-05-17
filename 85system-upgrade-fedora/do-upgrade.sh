@@ -2,7 +2,7 @@
 # actually perform the upgrade, using UPGRADEBIN (set in /etc/conf.d)
 
 do_upgrade() {
-    local args=""
+    local args="" rv=0
     getargbool 0 rd.upgrade.test && args="$args --testing"
     getargbool 0 rd.upgrade.verbose && args="$args --verbose"
     getargbool 0 rd.upgrade.debug && args="$args --debug"
@@ -30,14 +30,16 @@ do_upgrade() {
 
     # and off we go...
     $UPGRADEBIN --root=/sysroot $args
+    rv=$?
 
     # restore things twiddled by workarounds above. TODO: remove!
     NEWROOT="$SAVED_NEWROOT"
     if [ -f /sys/fs/selinux/enforce ]; then
         echo $enforce > /sys/fs/selinux/enforce
     fi
+    return $rv
 }
 
 [ ! -x "$UPGRADEBIN" ] && warn "upgrade binary '$UPGRADEBIN' missing!" && return
 
-do_upgrade
+do_upgrade || exit $?
