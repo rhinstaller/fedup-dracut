@@ -38,7 +38,7 @@ kver="${2:-$(uname -r)}"
 [ -d "$repodir" ] || die "directory $repodir doesn't exist. create it first."
 [ -f $repodir/repodata/repomd.xml ] || createrepo=1
 
-source /etc/os-release
+source /etc/os-release 2>/dev/null
 
 kernel="/boot/vmlinuz-$kver" # NOTE: distro-specific
 
@@ -106,3 +106,7 @@ fi
 chmod -R a+r $repodir
 
 echo "done."
+
+if [ -z "$VERSION_ID" ]; then
+    echo "You should probably set 'version' in $repodir/.treeinfo"
+fi
