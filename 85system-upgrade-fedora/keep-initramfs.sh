@@ -14,6 +14,9 @@ mount -t tmpfs -o mode=755 tmpfs "$upgradedir" \
 
 cp -ax / "$upgradedir" || die "failed to save initramfs to $upgradedir"
 
+# switch off initrd mode
+rm -f "$upgradedir/etc/initrd-release"
+
 bind_into_newroot() {
     local dir="$1"
     echo "making /$dir available inside $NEWROOT"
