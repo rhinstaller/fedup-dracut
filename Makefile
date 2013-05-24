@@ -10,7 +10,8 @@ dracut_SCRIPTS = 90system-upgrade/module-setup.sh \
 		 90system-upgrade/upgrade-pre-pivot.sh \
 		 90system-upgrade/upgrade-pre.sh \
 		 90system-upgrade/upgrade.sh \
-		 90system-upgrade/upgrade-post.sh
+		 90system-upgrade/upgrade-post.sh \
+		 90system-upgrade/initrd-system-upgrade-generator
 dracut_DATA = 90system-upgrade/README.txt \
 	      90system-upgrade/upgrade.target \
 	      90system-upgrade/upgrade-pre.service \

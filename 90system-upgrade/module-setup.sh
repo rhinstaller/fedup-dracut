@@ -42,6 +42,12 @@ install() {
         ln -sf "../$s.service" $upgrade_wantsdir
     done
 
+    # generator to switch to upgrade.target when we return to initrd
+    generatordir="/usr/lib/systemd/system-generators"
+    mkdir -p "${initdir}${generatordir}"
+    inst_script "$moddir/initrd-system-upgrade-generator" \
+                "$generatordir/initrd-system-upgrade-generator"
+
     # debug shell service
     basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
     mkdir -p "$basic_wantsdir"
