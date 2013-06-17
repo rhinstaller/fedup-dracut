@@ -72,7 +72,8 @@ cp -f $kernel "$repodir/$KERNELPATH" || \
 
 # build upgrade.img
 echo "* building $UPGRADEPATH (this will take a moment..)"
-dracut --no-hostonly --force --add system-upgrade "$repodir/$UPGRADEPATH" $kver || \
+dracut --no-hostonly --force --add "system-upgrade convertfs" \
+    "$repodir/$UPGRADEPATH" $kver || \
     die "dracut failed to build upgrade.img."
 
 # write .treeinfo
