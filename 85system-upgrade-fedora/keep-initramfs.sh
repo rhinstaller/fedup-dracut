@@ -67,3 +67,8 @@ bind_into_newroot $plydir
 
 # Create /run in $NEWROOT if not already available
 create_newroot_dir run
+
+# If $NEWROOT does not use systemd, mask out initrd-udevadm-cleanup-db since
+# nothing will be repopulating the data
+[ -x "$NEWROOT/usr/lib/systemd/systemd" ] || \
+    ln -sf /dev/null /etc/systemd/system/initrd-udevadm-cleanup-db.service
