@@ -14,17 +14,42 @@ mount -t tmpfs -o mode=755 tmpfs "$upgradedir" \
 
 cp -ax / "$upgradedir" || die "failed to save initramfs to $upgradedir"
 
-bind_into_newroot() {
-    local dir="$1"
-    echo "making /$dir available inside $NEWROOT"
-    if [ ! -d $NEWROOT/$dir ]; then
+create_newroot_dir() {
+    local newdir="$1"
+
+    # Save the current mount options
+    # mountinfo consists of lines of the form:
+    # <mount-ID> <parent-ID> <major>:<minor> <root> <mount point> <options> <optional fields> ... - <fstype> <source> <super options>
+    #
+    # This loops assumes that $NEWROOT is a mount point and that we can
+    # ignore <root>, since nothing should be mounted in a chroot jail yet
+    local old_opts=""
+    local mount_id parent_id major_minor root mount_point options rest
+    while read -r mount_id parent_id major_minor root mount_point options \
+            rest ; do
+        if [ "$mount_point" = "$NEWROOT" ]; then
+            old_opts="$options"
+            break
+        fi
+    done < /proc/self/mountinfo
+    if [ -z "$old_opts" ]; then
+        old_opts="defaults"
+    fi
+
+    if [ ! -d "$NEWROOT/$newdir" ]; then
         # attempt to create the dir if it's not already present.
         # NOTE: this is somewhat unreliable and should be avoided if possible,
         # e.g. by making sure the required dirs exist before reboot
-        mount -o remount,rw $NEWROOT
-        mkdir -p $NEWROOT/$dir
-        mount -o remount $NEWROOT
+        mount -o remount,rw "$NEWROOT"
+        mkdir -p "$NEWROOT/$newdir"
+        mount -o remount,"$old_opts" "$NEWROOT"
     fi
+}
+
+bind_into_newroot() {
+    local dir="$1"
+    echo "making /$dir available inside $NEWROOT"
+    create_newroot_dir "$dir"
     mount --bind $upgradedir/$dir $NEWROOT/$dir \
         || warn "failed to bind /$dir into $NEWROOT"
     # leave a note for upgrade-prep.service
@@ -39,3 +64,11 @@ bind_into_newroot lib/modules/$(uname -r)
 plydir=lib/plymouth
 [ -d /$plydir ] || plydir=lib64/plymouth
 bind_into_newroot $plydir
+
+# Create /run in $NEWROOT if not already available
+create_newroot_dir run
+
+# If $NEWROOT does not use systemd, mask out initrd-udevadm-cleanup-db since
+# nothing will be repopulating the data
+[ -x "$NEWROOT/usr/lib/systemd/systemd" ] || \
+    ln -sf /dev/null /etc/systemd/system/initrd-udevadm-cleanup-db.service
