@@ -565,14 +565,36 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level,
     fflush(stdout);
 }
 
+/********************
+ * helper functions *
+ ********************/
+
+/* read a list of filenames out of the given file */
+gchar **read_filelist(gchar *path, gchar *name) {
+    gchar *filelist_path = NULL;
+    gchar *filelist_data = NULL;
+    gchar **files = NULL;
+
+    filelist_path = g_build_filename(path, name, NULL);
+    if (!g_file_get_contents(filelist_path, &filelist_data, NULL, &error))
+        g_critical(error->message);
+
+    /* parse the data into a list of files */
+    g_strchomp(filelist_data);
+    files = g_strsplit(filelist_data, "\n", -1);
+
+    g_free(filelist_path);
+    g_free(filelist_data);
+
+    return files;
+}
+
 /****************
  * main program *
  ****************/
 
 /* Total runtime for my test system (F17->F18) is ~70m. */
 int main(int argc, char* argv[]) {
-    gchar *filelist = NULL;
-    gchar *filelist_data = NULL;
     gchar *symlink = NULL;
     gchar *link_target = NULL;
     gchar *origroot = NULL;
@@ -638,17 +660,7 @@ int main(int argc, char* argv[]) {
 
 
     /* read filelist from packagedir */
-    filelist = g_build_filename(packagedir, UPGRADE_FILELIST, NULL);
-    if (!g_file_get_contents(filelist, &filelist_data, NULL, &error))
-        g_critical(error->message);
-
-    /* parse the data into a list of files */
-    g_strchomp(filelist_data);
-    files = g_strsplit(filelist_data, "\n", -1);
-
-    g_free(filelist);
-    g_free(filelist_data);
-
+    files = read_filelist(packagedir, UPGRADE_FILELIST);
 
     /* set up RPM transaction - this takes ~90s (~2% total duration) */
     g_message("preparing for upgrade...");
