@@ -15,8 +15,8 @@ getarg 'rd.upgrade.break=upgrade' 'rd.break=upgrade' && \
     emergency_shell -n upgrade "Break before upgrade"
 
 setstate() {
-    export UPGRADE_STATE="$@"
-    echo "$UPGRADE_STATE" > $NEWROOT/var/tmp/upgrade.state
+    export UPGRADE_STATE="$*"
+    echo "$UPGRADE_STATE" > $NEWROOT/var/tmp/system-upgrade.state
 }
 
 setstate running
