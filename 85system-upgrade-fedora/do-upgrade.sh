@@ -23,17 +23,11 @@ do_upgrade() {
     # https://bugzilla.redhat.com/show_bug.cgi?id=844167
     # others to be filed (mysterious initramfs without kernel modules, etc.)
 
-    # workaround for a dracut buglet. FIXME: remove when this patch is upstream:
-    # http://permalink.gmane.org/gmane.linux.kernel.initramfs/2967
-    SAVED_NEWROOT="$NEWROOT"
-    NEWROOT=''
-
     # and off we go...
     $UPGRADEBIN --root=/sysroot $args
     rv=$?
 
     # restore things twiddled by workarounds above. TODO: remove!
-    NEWROOT="$SAVED_NEWROOT"
     if [ -f /sys/fs/selinux/enforce ]; then
         echo $enforce > /sys/fs/selinux/enforce
     fi

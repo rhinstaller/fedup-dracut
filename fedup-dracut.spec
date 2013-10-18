@@ -17,7 +17,7 @@ BuildRequires:  glib2-devel
 Requires:       rpm >= 4.10.0
 Requires:       plymouth >= %{plymouthver}
 Requires:       systemd >= 195-8
-Requires:       dracut
+Requires:       dracut >= 025
 
 %package plymouth
 BuildRequires:  plymouth-devel
