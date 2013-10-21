@@ -21,9 +21,9 @@ depends() {
 }
 
 install() {
-    # Set UPGRADE, UPGRADEROOT, UPGRADELINK
+    # Set UPGRADE env variable
     inst_hook cmdline 01 "$moddir/upgrade-init.sh"
-    # Save UPGRADEROOT, UPGRADELINK for running system
+    # Save copy of $NEWROOT/system-upgrade to /run
     inst_hook pre-pivot 99 "$moddir/upgrade-pre-pivot.sh"
 
     # NOTE: 98systemd copies units from here to /run/systemd/system so systemd

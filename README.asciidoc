@@ -16,16 +16,14 @@ This module provides a (distro-neutral) framework for running upgrades.
 * Adds three dracut hooks: `upgrade-pre`, `upgrade`, and `upgrade-post`.
 * Adds `upgrade.target`, which runs the above hooks (in order)
 * Automatically includes any other modules named `system-upgrade-*`
-* Defines `UPGRADEROOT` and `UPGRADELINK` paths
-* Saves those to `/run/initramfs/upgrade.conf` if both exist
-* 'BONUS:' adds upgrade-debug-shell.service
+* 'BONUS:' adds system-upgrade-shell.service
 
 `85system-upgrade-fedora/`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is the Fedora 'system-upgrade' implementation.
 
 * Includes upgrade tool, SELinux policy, plymouth, etc.
-* Copies initramfs to `$UPGRADEROOT`
+* Copies initramfs to `$NEWROOT/system-upgrade-root`
 * Runs 'system-upgrade-fedora' binary in the `upgrade` hook
 * Save log & journal to `/var/log/upgrade.{log,journal}` before reboot
 
