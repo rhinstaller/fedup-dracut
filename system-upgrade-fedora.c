@@ -571,6 +571,7 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level,
 
 /* read a list of filenames out of the given file */
 gchar **read_filelist(gchar *path, gchar *name) {
+    GError *error = NULL;
     gchar *filelist_path = NULL;
     gchar *filelist_data = NULL;
     gchar **files = NULL;

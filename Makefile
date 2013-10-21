@@ -1,4 +1,4 @@
-VERSION=0.7.3
+VERSION=0.8.0
 INSTALL=install -p
 SED=sed
 LIBEXECDIR=/usr/libexec
@@ -17,7 +17,7 @@ dracut_DATA = 90system-upgrade/README.txt \
 	      90system-upgrade/upgrade-pre.service \
 	      90system-upgrade/upgrade.service \
 	      90system-upgrade/upgrade-post.service \
-	      90system-upgrade/upgrade-debug-shell.service
+	      90system-upgrade/system-upgrade-shell.service
 
 fedora_DIR = $(DRACUTMODDIR)/85system-upgrade-fedora
 fedora_BIN = system-upgrade-fedora
@@ -33,7 +33,7 @@ plymouth_DIR = $(THEMESDIR)$(THEMENAME)
 plymouth_DATA = plymouth/*.png
 plymouth_THEME = plymouth/fedup.plymouth
 
-GENFILES = 85system-upgrade-fedora/module-setup.sh
+GENFILES = 85system-upgrade-fedora/module-setup.sh fedup-dracut.spec
 
 SCRIPTS = $(dracut_SCRIPTS) $(fedora_SCRIPTS)
 DATA = $(dracut_DATA) $(plymouth_DATA) $(plymouth_THEME)
@@ -52,7 +52,8 @@ $(GENFILES): %: %.in
 	       $< > $@
 
 clean:
-	rm -f $(BIN) $(GENFILES) $(ARCHIVE)
+	rm -f $(BIN) $(GENFILES) $(ARCHIVE) upgrade.img
+	rm -rf rpm
 
 install: $(BIN) $(SCRIPTS) $(DATA)
 	$(INSTALL) -d $(DESTDIR)$(LIBEXECDIR)
@@ -72,5 +73,23 @@ archive: $(ARCHIVE)
 $(ARCHIVE):
 	git archive --format=tar --prefix=fedup-dracut-$(VERSION)/ HEAD \
 	  | xz -c > $@ || rm $@
+
+rpm: $(ARCHIVE) fedup-dracut.spec
+	mkdir -p rpm/build
+	rpmbuild -ba fedup-dracut.spec \
+		 --define '_specdir $(PWD)' \
+		 --define '_sourcedir $(PWD)' \
+		 --define '_specdir $(PWD)' \
+		 --define '_srcrpmdir $(PWD)/rpm' \
+		 --define '_rpmdir $(PWD)/rpm' \
+		 --define '_builddir $(PWD)/rpm/build'
+
+upgrade.img:
+	PLYMOUTH_THEME_NAME=$(THEMENAME) \
+	dracut --conf /dev/null --confdir /var/empty --add "system-upgrade" \
+		--no-hostonly --nolvmconf --nomdadmconf --force --verbose \
+		upgrade.img
+
+
 
 .PHONY: all clean archive install
