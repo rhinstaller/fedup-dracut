@@ -1,6 +1,7 @@
 #!/bin/bash
 
 UPGRADEBIN=@LIBEXECDIR@/system-upgrade-fedora
+FEDUP_VERSION=@VERSION@
 
 check() {
     [ -x $UPGRADEBIN ] || return 1
@@ -12,6 +13,15 @@ depends() {
 }
 
 install() {
+    # write our version info somewhere
+    {
+        echo NAME=\"fedup-dracut\"
+        echo VERSION=\"$FEDUP_VERSION\"
+        echo ID=fedup-dracut
+        echo VERSION_ID=$FEDUP_VERSION
+        echo PRETTY_NAME=\"fedup-dracut-$FEDUP_VERSION\"
+        echo ANSI_COLOR=\"0\;34\"
+    } > $initdir/etc/system-upgrade-release
     # stuff we need for initial boot
     # ------------------------------
     # SELinux policy and contexts
@@ -23,7 +33,6 @@ install() {
     # remove the plymouth text plugin so we get either graphics or details
     rm -r ${initdir}/$(plymouth --get-splash-plugin-path)text.so \
           ${initdir}/usr/share/plymouth/themes/text/*
-
 
 
     # stuff we use in upgrade hook(s)
