@@ -16,6 +16,9 @@ The upgrade workflow is something like this:
     * `UPGRADEROOT` will be written to `/run/initramfs/upgrade.conf`
     * distro-specific modules may want to save initramfs to `$UPGRADEROOT` here
     * distro-specific filesystem migration should use the `pre-mount` hook
+    * initramfs copies the `$NEWROOT/system-upgrade` symlink to
+      `/run/system-upgrade`
+    * initramfs does a `switch-root` to the "real" root filesystem
 . The system mounts its local disks.
 . The system prepares `$UPGRADEROOT`
     * The root directory gets recursive-bind-mounted to `$UPGRADEROOT/sysroot`
