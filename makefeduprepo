@@ -105,6 +105,18 @@ fi
 
 chmod -R a+r $repodir
 
+cat > $repodir/serve << '__EOT__'
+#!/bin/bash
+echo "This repo will be reachable at:"
+echo
+for ip in $(ip addr | sed -rn 's| *inet ([0-9.]+)/.*|\1|p'); do
+    echo "    http://$ip:${1:-8000}/"
+done
+echo
+python -m SimpleHTTPServer $1
+__EOT__
+chmod 0755 $repodir/serve
+
 echo "done."
 
 if [ -z "$VERSION_ID" ]; then
