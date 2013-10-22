@@ -84,6 +84,10 @@ rpm: $(ARCHIVE) fedup-dracut.spec
 		 --define '_rpmdir $(PWD)/rpm' \
 		 --define '_builddir $(PWD)/rpm/build'
 
+repo: makefeduprepo
+	mkdir repo
+	./makefeduprepo repo || rm -rf repo
+
 upgrade.img:
 	PLYMOUTH_THEME_NAME=$(THEMENAME) \
 	dracut --conf /dev/null --confdir /var/empty --add "system-upgrade" \
