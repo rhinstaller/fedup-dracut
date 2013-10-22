@@ -48,10 +48,11 @@ install() {
     inst_script "$moddir/initrd-system-upgrade-generator" \
                 "$generatordir/initrd-system-upgrade-generator"
 
-    # debug shell service
+    # upgrade shell service
     basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
     mkdir -p "$basic_wantsdir"
-    inst_simple "$moddir/system-upgrade-shell.service" "$unitdir/upgrade-debug-shell.service"
+    inst_simple "$moddir/system-upgrade-shell.service" \
+                "$unitdir/system-upgrade-shell.service"
     ln -sf "../system-upgrade-shell.service" $basic_wantsdir
 }
 
