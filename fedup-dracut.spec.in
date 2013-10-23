@@ -2,7 +2,7 @@
 %global plymouthver 0.8.6
 
 Name:       fedup-dracut
-Version:    0.7.3
+Version:    @VERSION@
 Release:    0%{?dist}
 Summary:    The Fedora Upgrade tool initramfs environment
 
