@@ -49,10 +49,10 @@ install() {
                 "$generatordir/initrd-system-upgrade-generator"
 
     # upgrade shell service
-    basic_wantsdir="${initdir}${unitdir}/basic.target.wants"
-    mkdir -p "$basic_wantsdir"
+    sysinit_wantsdir="${initdir}${unitdir}/sysinit.target.wants"
+    mkdir -p $sysinit_wantsdir
     inst_simple "$moddir/system-upgrade-shell.service" \
                 "$unitdir/system-upgrade-shell.service"
-    ln -sf "../system-upgrade-shell.service" $basic_wantsdir
+    ln -sf "../system-upgrade-shell.service" $sysinit_wantsdir
 }
 
