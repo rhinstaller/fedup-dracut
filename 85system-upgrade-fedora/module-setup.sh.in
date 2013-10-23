@@ -20,6 +20,10 @@ install() {
     dracut_install $(find /etc/selinux/*/contexts)
     # script to save initramfs at UPGRADEROOT
     inst_hook pre-pivot 99 "$moddir/keep-initramfs.sh"
+    # remove the plymouth text plugin so we get either graphics or details
+    rm -r ${initdir}/$(plymouth --get-splash-plugin-path)text.so \
+          ${initdir}/usr/share/plymouth/themes/text/*
+
 
 
     # stuff we use in upgrade hook(s)
