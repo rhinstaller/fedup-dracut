@@ -74,7 +74,7 @@ cp -f $kernel "$repodir/$KERNELPATH" || \
 echo "* building $UPGRADEPATH (this will take a moment..)"
 dracut --conf /dev/null --confdir $repodir \
        --no-hostonly --nolvmconf --nomdadmconf \
-       --add "system-upgrade plymouth-label" \
+       --add "system-upgrade" \
        --xz --force "$repodir/$UPGRADEPATH" "$kver" || \
     die "dracut failed to build upgrade.img."
 
