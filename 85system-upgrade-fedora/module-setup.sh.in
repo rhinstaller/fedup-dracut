@@ -12,6 +12,10 @@ depends() {
     echo plymouth
 }
 
+installkernel() {
+    instmods loop
+}
+
 install() {
     # write our version info somewhere
     {
