@@ -24,10 +24,8 @@ install() {
     # Set UPGRADE env variable
     inst_hook cmdline 01 "$moddir/upgrade-init.sh"
     # Save copy of $NEWROOT/system-upgrade to /run
-    inst_hook pre-pivot 99 "$moddir/upgrade-pre-pivot.sh"
+    inst_hook pre-pivot 95 "$moddir/upgrade-pre-pivot.sh"
 
-    # NOTE: 98systemd copies units from here to /run/systemd/system so systemd
-    #       won't lose our units after switch-root.
     unitdir="/etc/systemd/system"
 
     # Set up systemd target and units
