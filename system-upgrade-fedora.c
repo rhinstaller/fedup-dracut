@@ -578,7 +578,7 @@ gchar **read_filelist(gchar *path, gchar *name) {
 
     filelist_path = g_build_filename(path, name, NULL);
     if (!g_file_get_contents(filelist_path, &filelist_data, NULL, &error))
-        g_critical(error->message);
+        g_critical("%s", error->message);
 
     /* parse the data into a list of files */
     g_strchomp(filelist_data);
@@ -651,7 +651,7 @@ int main(int argc, char* argv[]) {
 
     link_target = g_file_read_link(symlink, &error);
     if (link_target == NULL)
-        g_critical(error->message);
+        g_critical("%s", error->message);
 
     packagedir = g_build_filename(root, link_target, NULL);
     g_debug("%s -> %s", symlink, packagedir);
