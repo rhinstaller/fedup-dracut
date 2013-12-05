@@ -58,6 +58,11 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Wed Dec 4 2013 Will Woods <wwoods@redhat.com> 0.8.0-0
+- Always put a shell on tty2
+- Show text output from upgrade if graphics not available
+- Fix --iso upgrades to F20 (#1024223)
+
 * Mon Mar 18 2013 Will Woods <wwoods@redhat.com> 0.7.3-0
 - Include 'makefeduprepo' script
 - Fix plymouthd crash with encrypted /home (#896023)
