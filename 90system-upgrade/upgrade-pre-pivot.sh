@@ -11,3 +11,10 @@ mkdir -p /run/systemd/system/sysinit.target.wants
 for d in system system/sysinit.target.wants; do
     mv -f /etc/systemd/$d/system-upgrade-shell.service /run/systemd/$d/
 done
+
+# fedup-0.7.x compat. drop this when 0.7.x is old & irrelevant.
+if grep -qw 'systemd.unit=system-upgrade.target' /proc/cmdline; then
+    echo "UPGRADEROOT=/system-upgrade-root" > /run/initramfs/upgrade.conf
+    echo "UPGRADELINK=/system-upgrade" >> /run/initramfs/upgrade.conf
+    ln -sf upgrade.target /etc/systemd/system/system-upgrade.target
+fi
