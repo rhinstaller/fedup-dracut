@@ -18,6 +18,11 @@ rm -f "$upgradedir/etc/initrd-release"
 # make sure we have os-release
 ln -sf "system-upgrade-release" "$upgradedir/etc/os-release"
 
+# move SELinux policy into the right place so we can load it
+mv $upgradedir/etc/selinux.hidden $upgradedir/etc/selinux
+# copy the system's SELinux config, so we use the same settings/policy
+cp -f $NEWROOT/etc/selinux/config $upgradedir/etc/selinux/config 2>/dev/null
+
 bind_into_newroot() {
     local dir="$1"
     echo "making /$dir available inside $NEWROOT"

@@ -29,9 +29,10 @@ install() {
     # stuff we need for initial boot
     # ------------------------------
     # SELinux policy and contexts
-    dracut_install /etc/selinux/config
     dracut_install /etc/selinux/*/policy/*
     dracut_install $(find /etc/selinux/*/contexts)
+    # Hide policy during initial boot (we'll load it before the upgrade)
+    mv ${initdir}/etc/selinux ${initdir}/etc/selinux.hidden
     # script to save initramfs at UPGRADEROOT
     inst_hook pre-pivot 99 "$moddir/keep-initramfs.sh"
     # replace the plymouth text plugin so we get either graphics or details
