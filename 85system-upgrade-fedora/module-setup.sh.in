@@ -45,6 +45,9 @@ install() {
     # -------------------------------
     # upgrader binary
     inst_binary $UPGRADEBIN
+    # rpm now handles selinux via a plugin - see rhbz#1146580
+    inst_libdir_file 'rpm-plugins/selinux.so'
+
     # config file so we can find it
     mkdir -p "${initdir}/etc/conf.d"
     echo "UPGRADEBIN=$UPGRADEBIN" > "${initdir}/etc/conf.d/fedup.conf"
