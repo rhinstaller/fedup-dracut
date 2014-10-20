@@ -56,9 +56,9 @@ if [ $createrepo ]; then
 fi
 
 
+
 # actual repo creation!
 # ---------------------
-[ $(id -u) = 0 ] || die "be root."
 # make leading dirs
 echo "creating fedup-capable repo at $repodir"
 mkdir -p "$repodir/$(dirname $KERNELPATH)" \
@@ -71,12 +71,16 @@ cp -f $kernel "$repodir/$KERNELPATH" || \
     die "couldn't copy kernel."
 
 # build upgrade.img
+sudo -n true &>/dev/null || echo "need root to build initrd."
+sudo true || die "failed to become root."
 echo "* building $UPGRADEPATH (this will take a moment..)"
-dracut --conf /dev/null --confdir $repodir \
-       --no-hostonly --nolvmconf --nomdadmconf \
-       --add "system-upgrade" \
-       --xz --force "$repodir/$UPGRADEPATH" "$kver" || \
-    die "dracut failed to build upgrade.img."
+sudo sh -c "
+     dracut --conf /dev/null --confdir $repodir \
+            --no-hostonly --nolvmconf --nomdadmconf \
+            --add system-upgrade \
+            --xz --force \"$repodir/$UPGRADEPATH\" $kver
+     chown $(id -u):$(id -g) \"$repodir/$UPGRADEPATH\"" || \
+     die "dracut failed to build upgrade.img."
 
 # write .treeinfo
 echo "* writing .treeinfo"
@@ -110,13 +114,20 @@ chmod -R a+r $repodir
 
 cat > $repodir/serve << '__EOT__'
 #!/bin/bash
+PORT=${1:-8000}
 echo "This repo will be reachable at:"
 echo
 for ip in $(ip addr | sed -rn 's| *inet ([0-9.]+)/.*|\1|p'); do
-    echo "    http://$ip:${1:-8000}/"
+    echo "    http://$ip:$PORT/"
 done
 echo
-python -m SimpleHTTPServer $1
+cat | python - $PORT <<__PYTHON_END__
+from SimpleHTTPServer import test
+try:
+    test()
+except KeyboardInterrupt:
+    print("exiting")
+__PYTHON_END__
 __EOT__
 chmod 0755 $repodir/serve
 
