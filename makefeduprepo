@@ -75,6 +75,7 @@ sudo -n true &>/dev/null || echo "need root to build initrd."
 sudo true || die "failed to become root."
 echo "* building $UPGRADEPATH (this will take a moment..)"
 sudo sh -c "
+     export PLYMOUTH_THEME_NAME=$PLYMOUTH_THEME_NAME
      dracut --conf /dev/null --confdir $repodir \
             --no-hostonly --nolvmconf --nomdadmconf \
             --add system-upgrade \
