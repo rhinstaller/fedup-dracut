@@ -58,6 +58,12 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
+* Tue Oct 21 2014 Will Woods <wwoods@redhat.com> 0.9.0-0
+- Enlongthen progress bar in fedup plymouth theme
+- Use rpm's selinux plugin if available (#1146580)
+- Fix racy LUKS unlock failure (#1044484)
+- Fix backwards compatibility with fedup-0.7.x
+
 * Wed Dec 4 2013 Will Woods <wwoods@redhat.com> 0.8.0-0
 - Always put a shell on tty2
 - Show text output from upgrade if graphics not available
