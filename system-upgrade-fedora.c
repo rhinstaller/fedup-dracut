@@ -43,6 +43,8 @@
 #define INSTALL_PERCENT 70
 #define ERASE_PERCENT 24
 /* TODO: add POSTTRANS_PERCENT */
+_Static_assert(SETUP_PERCENT+TRANS_PERCENT+INSTALL_PERCENT+ERASE_PERCENT==100,
+               "Phase percentages must add up to 100");
 
 /* globals */
 gchar *packagedir = NULL; /* target of UPGRADE_SYMLINK */
@@ -266,6 +268,7 @@ rpmts setup_transaction(gchar *files[]) {
 
     /* Make plymouth progress bar show signs of life */
     set_plymouth_percent(1);
+    prevpercent = 1;
 
     /* Populate the transaction */
     numfiles = g_strv_length(files);
@@ -275,8 +278,10 @@ rpmts setup_transaction(gchar *files[]) {
         if (add_upgrade(ts, *file))
             g_warning("couldn't add %s to the transaction", *file);
         percent = (++setup*SETUP_PERCENT) / numfiles;
-        if (percent > prevpercent)
+        if (percent > prevpercent) {
             set_plymouth_percent(percent);
+            prevpercent = percent;
+        }
         /* Ignore errors, just like anaconda did */
     }
 
@@ -365,7 +370,7 @@ void *rpm_trans_callback(const void *arg,
 {
     Header hdr = (Header) arg;
     static guint percent;
-    static guint prevpercent;
+    static guint prevpercent = 0;
     static guint installed = 0;
     static guint erased = 0;
     gchar *pkgfile;
@@ -377,7 +382,7 @@ void *rpm_trans_callback(const void *arg,
     /*
      * The upgrade transaction goes through three phases:
      * prep: TRANS_START, TRANS_PROGRESS, TRANS_STOP
-     *     duration: basically negligible
+     *     duration: basically negligible (<0.5% of upgrade time)
      * install: INST_START, INST_OPEN_FILE, INST_STOP, INST_CLOSE_FILE
      *     duration: very roughly 2/3 the transaction
      * cleanup:  UNINST_START, UNINST_STOP
@@ -392,7 +397,7 @@ void *rpm_trans_callback(const void *arg,
         g_message("preparing RPM transaction, one moment...");
         break;
     case RPMCALLBACK_TRANS_PROGRESS:
-        /* FIXME: track progress from SETUP_PERCENT to INSTALL_BASE_PERCENT */
+        /* no progress reporting since this takes negligible time */
         break;
     case RPMCALLBACK_TRANS_STOP:
         g_debug("trans_stop()");
