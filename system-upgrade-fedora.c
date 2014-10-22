@@ -412,10 +412,13 @@ void *rpm_trans_callback(const void *arg,
         g_free(pkgfile);
         break;
     case RPMCALLBACK_INST_START:
+        /* This happens exactly once per package during a real transaction. */
         g_debug("inst_start(\"%s\")", file);
         nvr = headerGetAsString(hdr, RPMTAG_NVR);
         g_message("[%u/%u] (%u%%) installing %s...",
                   installed+1, installcount, percent, nvr);
+        if (!testing)
+            installed++;
         rfree(nvr);
         break;
     case RPMCALLBACK_INST_PROGRESS:
@@ -427,7 +430,8 @@ void *rpm_trans_callback(const void *arg,
         g_debug("inst_close_file(\"%s\")", file);
         rpmShowProgress(arg, what, amount, total, key, NULL);
         /* NOTE: we do this here 'cuz test transactions don't do start/stop */
-        installed++;
+        if (testing)
+            installed++;
         percent = INSTALL_BASE_PERCENT + \
                     ((INSTALL_PERCENT*installed) / installcount);
         if (percent > prevpercent) {
