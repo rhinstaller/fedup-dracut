@@ -58,13 +58,22 @@ make install DESTDIR=$RPM_BUILD_ROOT \
 
 
 %changelog
-* Tue Oct 21 2014 Will Woods <wwoods@redhat.com> 0.9.0-0
-- Enlongthen progress bar in fedup plymouth theme
+* Tue Oct 21 2014 Will Woods <wwoods@redhat.com> 0.9.0-1
 - Use rpm's selinux plugin if available (#1146580)
 - Fix racy LUKS unlock failure (#1044484)
-- Fix backwards compatibility with fedup-0.7.x
+- Enlongthen progress bar in fedup plymouth theme
+- Other small progress fixes
 
-* Wed Dec 4 2013 Will Woods <wwoods@redhat.com> 0.8.0-0
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue Dec 10 2013 Will Woods <wwoods@redhat.com> 0.8.0-2
+- Fix compatibility with fedup 0.7.x
+
+* Wed Dec 4 2013 Will Woods <wwoods@redhat.com> 0.8.0-1
 - Always put a shell on tty2
 - Show text output from upgrade if graphics not available
 - Fix --iso upgrades to F20 (#1024223)
