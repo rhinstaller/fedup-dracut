@@ -43,6 +43,12 @@ all: $(SCRIPTS) $(DATA) $(BIN)
 
 PACKAGES=glib-2.0 rpm ply-boot-client
 
+YUM=yum
+install-builddeps:
+	case $$(grep '^ID' /etc/os-release) in \
+	  *fedora*) $(YUM) install ${PACKAGES:%='pkgconfig(%)'};; \
+	esac
+
 $(BIN): %: %.c
 	$(CC) $(shell pkg-config $(PACKAGES) --cflags --libs) $(CFLAGS) $< -o $@
 
