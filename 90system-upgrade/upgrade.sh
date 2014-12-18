@@ -14,6 +14,9 @@ source_conf /etc/conf.d
 getarg 'rd.upgrade.break=upgrade' 'rd.break=upgrade' && \
     emergency_shell -n upgrade "Break before upgrade"
 
+# equivalent to "setterm -blank 0"
+[ -c /dev/tty1 ] && echo -ne '\033[9;0]' > /dev/tty1
+
 setstate() {
     export UPGRADE_STATE="$*"
     echo "$UPGRADE_STATE" > $NEWROOT/var/tmp/system-upgrade.state
