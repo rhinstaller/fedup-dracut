@@ -1,4 +1,4 @@
-VERSION=0.9.0
+VERSION=0.9.2
 INSTALL=install -p
 SED=sed
 LIBEXECDIR=/usr/libexec
