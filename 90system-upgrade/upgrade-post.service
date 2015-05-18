@@ -8,7 +8,7 @@ After=upgrade.service
 [Service]
 Type=oneshot
 ExecStart=-/bin/upgrade-post
-ExecStopPost=-/usr/bin/systemctl --no-block isolate reboot.target
+ExecStopPost=-/usr/bin/systemctl --no-block --no-wall reboot
 StandardInput=null
 StandardOutput=journal+console
 StandardError=journal+console
